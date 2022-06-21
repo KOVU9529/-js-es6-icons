@@ -11,8 +11,10 @@ BONUS
 1- modificare la struttura dati fornita e valorizzare la proprietà "color" in modo dinamico: generare in modo casuale un codice colore, sapendo che la notazione esadecimale è formata dal simbolo "#" seguito da 6 caratteri alfanumerici compresi tra 0 e 9 e A e F.
 2- popolare le options della select della milestone 3 dinamicamente.*/
 
-//Dati Forniti
-const icon=[
+
+
+
+const arrayElement=[
 	{
 		name: 'cat',
 		prefix: 'fa-',
@@ -126,23 +128,73 @@ const icon=[
 		color: 'blue'
 	}
 ];
-//Milestone 1
-//Partendo dalla struttura dati fornita, 
-//creare una variabile di riferimneto al container fisico(html)
-//creare un ciclo forEach(per far scorrere la creazione id ogni nuovo box)
-//visualizzare in pagina un box per ogni icona, 
-//Creare un template che corrisponda al box che conterrà l'icona e il proprio nome
-//I dati per riempire il box saranno gli oggetti dell'array<i class="family: 'fas',prefix: 'fa-',name: 'horse',"></i>
-//in cui è presente il nome dell'icona e l'icona stessa.
 
-//Milestone 2
-//Ciascuna icona ha una proprietà "color": 
-//Attribuire ad ogni incona il riferimento al proprio colore ESEMPIO(color: 'blue')=> verrà aggiunta come classe all'icona
-//utilizzare questa proprietà per visualizzare le icone del colore corrispondente.
+//Inserisco precedentemente a tutto per far funzionare la function
+arrayElement.forEach((element)=>{
+	element.color=generateColor();
+});
 
-//Milestone 3
-//Aggiungere alla pagina una select in cui le options corrispondono ai vari tipi di icone (animal,
-// vegetable, user). 
-//CReare un select dove le opzioni sono gli oggetti  ( type: 'user',)
-//Quando l'utente seleziona un tipo dalla select, 
-//visualizzare solamente le icone corrispondenti.
+//Creo la variabile del mio container
+const containerJs=document.getElementById('container');
+console.log(containerJs);
+
+//Richiamo la function per la stampa in html 
+printCrad(arrayElement,containerJs);
+
+const selectCtegory=document.getElementById('type');
+selectCtegory.value='all';
+
+//Al cambiamneto della scelta viene generata un situazione differente
+//Geberate solo le card uguali al tipo sceltro nelle option della select
+selectCtegory.addEventListener('change',
+function(){
+	const currentValue=this.value;
+	containerJs.innerHTML = '';
+
+	//Impostiamo la condizione del cambiamento
+	if(currentValue !== 'all'){
+		//Applicando filter possiamo  filtrare la nostra scelta
+		const filterIcons= arrayElement.filter((element) =>{
+			return element.type === currentValue;
+		});
+
+		//al fine di non ripetere lo stesso blocco di codice
+		//utilizziamo la funzione printCard
+		printCrad(filterIcons,containerJs);
+		
+	}else{
+		printCrad(arrayElement,containerJs);
+	}
+});
+//----------------------------
+//Funzioni
+//----------------------------
+
+function printCrad(array,container){
+	array.forEach((element)=>{
+		const thisIcon=element;
+	
+		const template=`
+		<div class="card">
+			<i class="${thisIcon.family} ${thisIcon.prefix}${thisIcon.name}" style="color:${thisIcon.color}"></i>
+			${thisIcon.name}
+			</div>`
+		container.innerHTML += template;
+	});
+};
+//Bonus 1
+function generateColor(){
+	let color='#';
+	const symbols='0123456789abcdef';
+	for(let i =0; i < 6; i++){
+		const randomIndex=getRndInteger(0,symbols.length - 1);
+		const randomSymbols=symbols[randomIndex];
+		color += randomSymbols;
+	}
+    return color;
+};
+function getRndInteger(min, max) {
+	return Math.floor(Math.random() * (max - min + 1) ) + min;
+};
+
+
